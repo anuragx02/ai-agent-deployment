@@ -81,7 +81,7 @@ async def handle_jsonrpc(request_data):
                     }
                 },
                 "serverInfo": {
-                    "name": "filesystem-mcp",
+                    "name": "filesystem-server",
                     "version": "1.0.0"
                 }
             }
@@ -203,7 +203,7 @@ async def agent(req: AgentRequest):
         "steps": [
             {
                 "action": "list_files",
-                "mcp": "filesystem-mcp",
+                "mcp": "filesystem-server",
                 "params": {}
             }
         ]
