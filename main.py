@@ -11,7 +11,6 @@ from armoriq_sdk.exceptions import (
 )
 import os as os_sys
 from fastapi.responses import StreamingResponse
-from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import json
 from typing import Dict, Any
@@ -164,15 +163,11 @@ async def mcp_endpoint(request: Request):
     if os.getenv("ARMORIQ_MCP_DEBUG", "").lower() in {"1", "true", "yes", "on"}:
         logger.info("MCP response: %s", json.dumps(response_data, ensure_ascii=True))
 
-    accept_header = (request.headers.get("accept") or "").lower()
-    if "application/json" not in accept_header and "text/event-stream" in accept_header:
-        async def stream():
-            json_str = json.dumps(response_data)
-            yield f"event: message\ndata: {json_str}\n\n"
+    async def stream():
+        json_str = json.dumps(response_data)
+        yield f"event: message\ndata: {json_str}\n\n"
 
-        return StreamingResponse(stream(), media_type="text/event-stream")
-
-    return JSONResponse(response_data)
+    return StreamingResponse(stream(), media_type="text/event-stream")
 
 # -------------------
 # HEALTH CHECK
