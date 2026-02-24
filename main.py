@@ -20,6 +20,7 @@ load_dotenv(
     override=True,
 )
 
+logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper())
 logger = logging.getLogger("mcp")
 
 def _required_env(name: str) -> str:
@@ -41,6 +42,8 @@ client = ArmorIQClient(
     agent_id=agent_id,
     timeout=sdk_timeout,
 )
+if os.getenv("ARMORIQ_SDK_DEBUG", "").lower() in {"1", "true", "yes", "on"}:
+    client.debug = True
 
 BASE_DIR = "workspace"
 os_sys.makedirs(BASE_DIR, exist_ok=True)
